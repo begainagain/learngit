@@ -1,6 +1,5 @@
 package com.github.binarywang.demo.wechat.dao;
 
-import com.github.binarywang.demo.wechat.entity.Tourism;
 import com.github.binarywang.demo.wechat.entity.User_habit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

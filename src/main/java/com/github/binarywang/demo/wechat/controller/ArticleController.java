@@ -1,17 +1,11 @@
 package com.github.binarywang.demo.wechat.controller;
 
-
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.github.binarywang.demo.wechat.dao.Hot_articleRepository;
 import com.github.binarywang.demo.wechat.dao.Pc_habitRepository;
 import com.github.binarywang.demo.wechat.dao.User_habitRepository;
 import com.github.binarywang.demo.wechat.dao.Wshys_userRepository;
 import com.github.binarywang.demo.wechat.entity.Hot_article;
 import com.github.binarywang.demo.wechat.entity.Pc_habit;
-import com.github.binarywang.demo.wechat.entity.ProxyIP;
 import com.github.binarywang.demo.wechat.entity.User_habit;
 import com.github.binarywang.demo.wechat.utils.DataUtils;
 import com.github.binarywang.demo.wechat.utils.ImageSpider;
@@ -22,14 +16,7 @@ import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.crypto.Data;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -57,7 +44,7 @@ public class ArticleController {
     @Autowired
     private Pc_habitRepository pc_habitRepository;
 
-    private static final String JSONS ="\\[.*?\\]";
+    private static final String JSONS ="\\[.*?\\],";
 
     /*
      *通过网页中json数据存到数据库中
@@ -66,7 +53,7 @@ public class ArticleController {
     public Boolean savehotarticle(@RequestParam("json") String json) throws ParseException {
         Matcher jsons = Pattern.compile(JSONS).matcher(json);
         if(jsons.find()){
-            json=jsons.group();
+            json=jsons.group().substring(0,jsons.group().length()-1);
         }else {
             return false;
         }
@@ -80,16 +67,17 @@ public class ArticleController {
             } else {
                 if (jsonArray.getJSONObject(i).containsKey("author")) {
                     String author = jsonArray.getJSONObject(i).getString("author");
-                    if(author.equals("贝贝")||author.equals("佛佛佛")||author.equals("轻松筹")||author.equals("分众专享")||author.equals("美团福利社")||author.equals("妙法佛音")|| author.equals("刘素云")||
-                            author.equals("缘分天空")||author.equals("天使爱美丽")||author.equals("CoCo都可")||author.equals("闲云谷")||author.equals("闹闹女巫店")|| author.equals("天天炫拍")||
-                            author.equals("幸福西饼")||author.equals("萨克斯")||author.equals("点点星光")||author.contains("中国人寿")||author.equals("一起听吧") || author.equals("肯德基")||
-                            author.equals("国网湖北电力")||author.equals("汉堡王中国")||author.equals("必胜客")||author.equals("工银信用卡微讯")||author.equals("音乐早餐") || author.contains("银行")||
-                            author.equals("平安普惠")||author.equals("麦当劳")||author.equals("平安驿站")||author.equals("珠海交警") || author.equals("和教授")|| author.equals("招商蛇口邮轮母港")||
-                            author.equals("每日音乐")||author.equals("最爱听情歌")|| author.contains("中国石化")|| author.equals("平安车险")|| author.contains("联通") || author.contains("中国太平")||
-                            author.contains("家乐福中国")||author.contains("捡书姑娘")||author.contains("专车")|| author.contains("超市")|| author.contains("瑞幸咖啡")|| author.contains("小米商城")||
-                            author.contains("沃尔玛")||author.contains("华润")|| author.contains("爱的家园")|| author.contains("经典流行好音乐")|| author.contains("感恩生活")|| author.contains("主耶稣")||
-                            author.contains("家家悦")||author.contains("美宜佳")|| author.contains("农村信用社")|| author.contains("顺丰")||author.contains("梨乡莱阳")|| author.contains("移动")||
-                            author.contains("飞机大战")||author.contains("花点时间")||author.contains("沃尔玛")||author.contains("浦发")||author.contains("鲜丰水果")){
+                    if(author.contains("贝贝")||author.contains("佛佛佛")||author.contains("轻松筹")||author.contains("分众专享")||author.contains("美团福利社")||author.contains("佛音")|| author.contains("刘素云")||
+                            author.contains("缘分天空")||author.contains("天使爱美丽")||author.contains("CoCo都可")||author.contains("闲云谷")||author.contains("闹闹女巫店")|| author.contains("天天炫拍")||
+                            author.contains("幸福西饼")||author.contains("萨克斯")||author.contains("点点星光")||author.contains("中国人寿")||author.contains("一起听吧") || author.contains("肯德基")||
+                            author.contains("国网湖北电力")||author.contains("汉堡王中国")||author.contains("必胜客")||author.contains("工银信用卡微讯")||author.contains("音乐早餐") || author.contains("银行")||
+                            author.contains("平安")||author.contains("麦当劳")||author.contains("珠海交警") || author.contains("和教授")|| author.contains("招商蛇口邮轮母港")||author.contains("中国太平")||
+                            author.contains("每日音乐")||author.contains("最爱听情歌")|| author.contains("中国石化")|| author.contains("平安车险")|| author.contains("联通") || author.contains("小米商城")||
+                            author.contains("家乐福中国")||author.contains("捡书姑娘")||author.contains("专车")|| author.contains("超市")|| author.contains("瑞幸咖啡")|| author.contains("主耶稣")||
+                            author.contains("沃尔玛")||author.contains("华润")|| author.contains("爱的家园")|| author.contains("经典流行好音乐")|| author.contains("感恩生活")|| author.contains("移动")||
+                            author.contains("家家悦")||author.contains("美宜佳")|| author.contains("农村信用社")|| author.contains("顺丰")||author.contains("梨乡莱阳")|| author.contains("常念阿彌陀佛")||
+                            author.contains("飞机大战")||author.contains("花点时间")||author.contains("浦发")||author.contains("鲜丰水果")||author.contains("广东7")||author.contains("陳大惠")||
+                            author.contains("退休群")||author.contains("医药")||author.contains("联华")||author.contains("百果园")||author.contains("美团")||author.contains("动态相册")||author.contains("魔力相册")){
                         continue;
                     }else {
                         hot_article.setAuthor(jsonArray.getJSONObject(i).getString("author"));
@@ -143,19 +131,25 @@ public class ArticleController {
             }
         }
         int num = user_habitRepository.findNumberByUserid(userid);
+        if (num >= 45) {
+            num=0;
+            user_habitRepository.updateHistory_Number(0, userid);
+        }
         String[] strings = new String[]{"广告","时事,民生", "财富,企业", "幽默,乐活", "时尚,体娱", "情感,文摘"};
 
         JsonObject object = new JsonObject();
-        Calendar calendar = Calendar.getInstance();  //得到日历
-        calendar.setTime(new Date());//把当前时间赋给日历
-        calendar.add(Calendar.DAY_OF_MONTH, -4);
-
-
-
-
-
-
-        Date datetime = calendar.getTime();
+//        Calendar calendar = Calendar.getInstance();  //得到日历
+//        calendar.setTime(new Date());//把当前时间赋给日历
+//        if(calendar.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY){
+//            calendar.add(Calendar.DAY_OF_MONTH, -5);
+//        }else if(calendar.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY){
+//            calendar.add(Calendar.DAY_OF_MONTH, -6);
+//        }else if(calendar.get(Calendar.DAY_OF_WEEK)==Calendar.MONDAY){
+//            calendar.add(Calendar.DAY_OF_MONTH, -7);
+//        }else{
+//            calendar.add(Calendar.DAY_OF_MONTH, -4);
+//        }
+//        Date datetime = calendar.getTime();
         for (String S : strings) {
 
             JsonArray array = new JsonArray();
@@ -188,8 +182,9 @@ public class ArticleController {
                 continue;
             }
             String[] SS = S.split(",");
-            List<Hot_article> hot_article = hot_articleRepository.findForNow(SS[0],SS[1],datetime, num);
-            for (int i = 0; i < hot_article.size(); i++) {
+            List<Hot_article> hot_article = hot_articleRepository.findForNow(SS[0],SS[1], num);
+            System.out.println(hot_article.size()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            for (int i = 0; i <hot_article.size(); i++) {
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("summary", hot_article.get(i).getSummary());
                 jsonObject.addProperty("title", hot_article.get(i).getTitle());
@@ -283,23 +278,35 @@ public class ArticleController {
             }
         }
         int num = pc_habitRepository.findNumberByUserid(pcid);
+        if (num >= 45) {
+            num=0;
+            pc_habitRepository.updateHistory_Number(0, pcid);
+        }
         String[] strings = new String[]{"时事,民生", "财富,企业", "幽默,乐活", "时尚,体娱", "情感,文摘"};
-//        String[] strings = new String[]{"美食","健康"};
+//        String[] strings = new String[]{"美食,健康"};
 
         JsonObject object = new JsonObject();
-        Calendar calendar = Calendar.getInstance();  //得到日历
-        calendar.setTime(new Date());//把当前时间赋给日历
-        calendar.add(Calendar.DAY_OF_MONTH, -4);
-        Date datetime = calendar.getTime();
-        for (String S : strings) {
+//        Calendar calendar = Calendar.getInstance();  //得到日历
+//        calendar.setTime(new Date());//把当前时间赋给日历
+//        if(calendar.get(Calendar.DAY_OF_WEEK)==Calendar.MONDAY){
+//            calendar.add(Calendar.DAY_OF_MONTH, -7);
+//        }else if(calendar.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY){
+//            calendar.add(Calendar.DAY_OF_MONTH, -6);
+//        }else if(calendar.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY){
+//            calendar.add(Calendar.DAY_OF_MONTH, -5);
+//        }else{
+//            calendar.add(Calendar.DAY_OF_MONTH, -4);
+//        }
+//        Date datetime = calendar.getTime();
+        for(String S : strings) {
             JsonArray array = new JsonArray();
             String[] SS= S.split(",");
             System.out.println(SS[0]);
             //            List<Hot_article> hot_article = hot_articleRepository.findByTypeAndNumber(S,datetime,num);
-            List<Hot_article> hot_article = hot_articleRepository.findNotVideo(SS[0],SS[1],datetime, num);
+            List<Hot_article> hot_article = hot_articleRepository.findNotVideo(SS[0],SS[1],num);
 
             int number=0;
-            for (int i = 0; i < hot_article.size(); i++) {
+            for (int i = 0; i <hot_article.size(); i++) {
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("title", hot_article.get(i).getTitle());
                 jsonObject.addProperty("summary", hot_article.get(i).getSummary());
@@ -375,34 +382,6 @@ public class ArticleController {
         return jsonObject;
     }
 
-    @PostMapping("/videoType")
-    public void findVideo(){
-        Calendar calendar = Calendar.getInstance();  //得到日历
-        calendar.setTime(new Date());//把当前时间赋给日历
-        calendar.add(Calendar.DAY_OF_MONTH, -4);
-        Date datetime = calendar.getTime();
-        List<Hot_article> video=hot_articleRepository.findForVideo(datetime);
-        for(int i=0;i<video.size();i++){
-            String html=video.get(i).getHtml();
-            StringBuffer sb = new StringBuffer();
-            try {
-                //构建一URL对象
-                URL url = new URL(html);
-                //使用openStream得到一输入流并由此构造一个BufferedReader对象
-                BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "UTF8"));
-                String line;
-                //读取www资源
-                while ((line = in.readLine()) != null)
-                { sb.append(line); }
-                if(String.valueOf(sb).contains("<iframe")&&String.valueOf(sb).contains("</iframe>")){
-                    hot_articleRepository.updateOriginalflag(233,html);
-                }
-                in.close();
-            } catch (Exception ex) {
-                ex.printStackTrace(); }
-        }
-    }
-
     @PostMapping("/imageUrl")
     public void storeimage(@RequestHeader("method") String method, @RequestHeader("days") int n,@RequestHeader("num") int num) throws Exception {
         ImageSpider imageSpider = new ImageSpider();
@@ -441,6 +420,9 @@ public class ArticleController {
                 }
 
                 String html = imageSpider.getHTML(url);
+                if(html.contains("<iframe")&&html.contains("</iframe>")){
+                    hot_articleRepository.updateOriginalflag(233,html);
+                }
                 List<String> listUrl = ImageSpider.getImageURL(html);
                 List<String> listSrc = ImageSpider.getImageSrc(listUrl);
                 String newStr = replaceHtmlTag(html, "img", "data-src", listSrc, "\"");
@@ -473,8 +455,8 @@ public class ArticleController {
 //        String newStr1 = replaceHtmlTag(str, "iframe", "data-src", src, "\"");
 //        System.out.println("       替换后为:"+newStr);
                 String path_html = url_path +"html/" + url_one.substring(74,105) + "." + "html";
-//                String path ="/data/wwwroot/www.rrjiaoyi.com/html/"+url_one.substring(74,105) + "." + "html";//无声或有声
-                String path ="/data/wwwroot/rrtest.rrjiaoyi.com/html/"+url_one.substring(74,105) + "." + "html";//测试号
+                String path ="/data/wwwroot/www.rrjiaoyi.com/html/"+url_one.substring(74,105) + "." + "html";//无声或有声
+//                String path ="/data/wwwroot/rrtest.rrjiaoyi.com/html/"+url_one.substring(74,105) + "." + "html";//测试号
                 saveHtml(path,neS);
                 hot_articleRepository.updateHtml(path_html,url_one);
                 
@@ -486,64 +468,15 @@ public class ArticleController {
                     if (i == 0) {
                         String path_one;
                         path_one = url_path+"img/"+src.substring(src.lastIndexOf("/")+1);
-//                        if(src.contains("/mmbiz/")){
-////                            String path_one = "D:/Program Files/新建文件夹/" + src.substring(32,82) + "."+url_handle(src);
-//                            path_one = url_path+"img/" + src.substring(28, 78) + "." + ImageSpider.url_handle(src);
-//                        }else if(src.contains("mmbiz_")){
-////                            System.out.println(startTag.get(m).substring(startTag.get(m).lastIndexOf("/")+1)+"2222222222222222222222222222");
-////                            System.out.println(startTag.get(m)+"1111111111111111111111111111111111");
-//                            path_one = url_path+"img/" + src.substring(32, 82) + "." + ImageSpider.url_handle(src);
-//
-////                            String path_one= "D:/Program Files/新建文件夹/" + src.substring(src.lastIndexOf("/")+1,src.lastIndexOf("/")+10) + "."+url_handle(src);
-//                            System.out.println("path=================="+path_one);
-//                        }else {
-////                            System.out.println(startTag.get(m).substring(startTag.get(m).lastIndexOf("/")+1)+"2222222222222222222222222222");
-////                            System.out.println(startTag.get(m)+"1111111111111111111111111111111111");
-//                            path_one = url_path+"img/" + src.substring(src.lastIndexOf("/")+1,src.lastIndexOf("/")+10) + "." + ImageSpider.url_handle(src);
-//
-////                            String path_one= "D:/Program Files/新建文件夹/" + src.substring(src.lastIndexOf("/")+1,src.lastIndexOf("/")+10) + "."+url_handle(src);
-//                            System.out.println("path=================="+path_one);
-//                        }
-
-//                        System.out.println("path_one=================="+path_one);
                         hot_articleRepository.updateOne(path_one, url_one);
                     } else if (i == 1) {
                         String path_two=list.get(i);
                         path_two = url_path+"img/"+src.substring(src.lastIndexOf("/")+1);
-//                        if(src.contains("mmbiz/")){
-//                            path_two = url_path +"img/" + src.substring(28, 78) + "." + ImageSpider.url_handle(src);
-////                            String path_two = "D:/Program Files/新建文件夹/" + src.substring(32,82) + "."+url_handle(src);
-//                        }else if(src.contains("mmbiz_")){
-////                            System.out.println(startTag.get(m).substring(startTag.get(m).lastIndexOf("/")+1)+"2222222222222222222222222222");
-////                            System.out.println(startTag.get(m)+"1111111111111111111111111111111111");
-//                            path_two= url_path+"img/" + src.substring(32, 82) + "." + ImageSpider.url_handle(src);
-//
-////                            String path_one= "D:/Program Files/新建文件夹/" + src.substring(src.lastIndexOf("/")+1,src.lastIndexOf("/")+10) + "."+url_handle(src);
-//                            System.out.println("path=================="+path_two);
-//                        }else {
-////                            System.out.println(startTag.get(m).substring(startTag.get(m).lastIndexOf("/")+1)+"2222222222222222222222222222");
-////                            System.out.println(startTag.get(m)+"1111111111111111111111111111111111");
-//                            path_two = url_path +"img/" + src.substring(src.lastIndexOf("/")+1,src.lastIndexOf("/")+10) + "." + ImageSpider.url_handle(src);
-////                            String path_one= "D:/Program Files/新建文件夹/" + src.substring(src.lastIndexOf("/")+1,src.lastIndexOf("/")+10) + "."+url_handle(src);
-//                        }
                         System.out.println("path_two=================="+path_two);
                         hot_articleRepository.updateTwo(path_two, url_one);
                     } else if (i == 2) {
                         String path_three=list.get(i);
                         path_three = url_path+"img/"+src.substring(src.lastIndexOf("/")+1);
-//                        if(src.contains("/mmbiz_")){
-//                            path_three= url_path+"img/" + src.substring(32, 82) + "." + ImageSpider.url_handle(src);
-////                            String path_one= "D:/Program Files/新建文件夹/" + src.substring(src.lastIndexOf("/")+1,src.lastIndexOf("/")+10) + "."+url_handle(src);
-//                            System.out.println("path=================="+path_three);
-//                        }else if(src.contains("mmbiz/")){
-//                            path_three = url_path +"img/" + src.substring(28, 78) + "." + ImageSpider.url_handle(src);
-////                            String path_two = "D:/Program Files/新建文件夹/" + src.substring(32,82) + "."+url_handle(src);
-//                        }else{
-////                            System.out.println(startTag.get(m).substring(startTag.get(m).lastIndexOf("/")+1)+"2222222222222222222222222222");
-////                            System.out.println(startTag.get(m)+"1111111111111111111111111111111111");
-//                            path_three = url_path +"img/" + src.substring(src.lastIndexOf("/")+1,src.lastIndexOf("/")+10) + "." + ImageSpider.url_handle(src);
-////                            String path_one= "D:/Program Files/新建文件夹/" + src.substring(src.lastIndexOf("/")+1,src.lastIndexOf("/")+10) + "."+url_handle(src);
-//                        }
                         System.out.println("path_three=================="+path_three);
                         hot_articleRepository.updateThree(path_three, url_one);
                     }

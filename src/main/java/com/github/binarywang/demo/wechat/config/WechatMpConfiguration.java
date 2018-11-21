@@ -52,16 +52,16 @@ public class WechatMpConfiguration {
   @ConditionalOnMissingBean
   public WxMpConfigStorage configStorage() {
     WxMpInMemoryConfigStorage configStorage = new WxMpInMemoryConfigStorage();
-//    configStorage.setAppId("wx320ec4c3f5f21074");//无声正式号
+    configStorage.setAppId("wx320ec4c3f5f21074");//无声正式号
 //    configStorage.setAppId("wxeceb2410ecc7e715");//人人交易网APP正式号
-    configStorage.setAppId("wx17c2fdd868e0b31d");//测试号
-//    configStorage.setSecret("a642dc74a7b0262753c54bc049ccb519");//无声正式号
+//    configStorage.setAppId("wx17c2fdd868e0b31d");//测试号
+    configStorage.setSecret("a642dc74a7b0262753c54bc049ccb519");//无声正式号
 //    configStorage.setSecret("b2108e68a03f7a0d4161bf58e26e73b8");//人人交易网APP正式号
-    configStorage.setSecret("1542ea3b49a908b01dee1e3662cb2f12");//测试号
+//    configStorage.setSecret("1542ea3b49a908b01dee1e3662cb2f12");//测试号
     configStorage.setToken("rrjywwspb");
-//    configStorage.setAesKey("o5kGnSUdOxBZ1jOY6of5oMlKgA8uBWHQuLIMTdRM0w0");//无声正式号
+    configStorage.setAesKey("o5kGnSUdOxBZ1jOY6of5oMlKgA8uBWHQuLIMTdRM0w0");//无声正式号
 //    configStorage.setAesKey("EsFtgRoFLTnrz84GKnSsZIveOsjarhMfzEAkA2EGDvm");//人人交易网APP正式号
-    configStorage.setAesKey("ILCdDPP2ScfqHud3BXqA7G8yy2I33GNaRB2lHuLztaO");//测试号
+//    configStorage.setAesKey("ILCdDPP2ScfqHud3BXqA7G8yy2I33GNaRB2lHuLztaO");//测试号
     return configStorage;
   }
 

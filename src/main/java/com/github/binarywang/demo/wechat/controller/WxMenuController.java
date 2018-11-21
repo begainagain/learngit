@@ -50,23 +50,21 @@ public class WxMenuController implements WxMpMenuService {
     public String menuCreateone() throws WxErrorException{
         WxMenu menu = new WxMenu();
 
+//        WxMenuButton button1 = new WxMenuButton();
+//        button1.setName("抽大奖");
+
         WxMenuButton button1 = new WxMenuButton();
-        button1.setName("抽大奖");
-
-
+        button1.setType(MenuButtonType.VIEW);
+        button1.setName("热文");
+        button1.setUrl(url_path+"fm?v=1.05");
 
 
         WxMenuButton button2 = new WxMenuButton();
-        button2.setType(MenuButtonType.VIEW);
-        button2.setName("热文");
-        button2.setUrl(url_path+"fm?v=1呸.04");
+        button2.setName("游戏");
 
 
         WxMenuButton button3 = new WxMenuButton();
-        button3.setName("游戏");
-
-
-
+        button3.setName("更多应用");
 
 
 //    WxMenuButton button2 = new WxMenuButton();
@@ -78,8 +76,7 @@ public class WxMenuController implements WxMpMenuService {
 //    button2.setUrl("http://rrtest.rrjiaoyi.com/fm//#/august?shareid=oJ_Nl0q08QpcjvmEfMfErpgwU8BU");
 //    button2.setKey("EVENT_PAGE");
 
-//        WxMenuButton button3 = new WxMenuButton();
-//        button3.setName("推荐");
+
 
 
 //        WxMenuButton button2 = new WxMenuButton();
@@ -97,68 +94,90 @@ public class WxMenuController implements WxMpMenuService {
 
 
 //    button1.setKey("NOW_ACT");
+//
 
-        WxMenuButton button11 = new WxMenuButton();
-        button11.setType(MenuButtonType.CLICK);
-        button11.setName("抽奖");
-        button11.setKey("LUCKY_DRAW");
-
-        WxMenuButton button12 = new WxMenuButton();
-        button12.setType(MenuButtonType.CLICK);
-        button12.setName("领奖");
-        button12.setKey("THE_PRIZE");
-
-        button1.getSubButtons().add(button11);
-        button1.getSubButtons().add(button12);
+//        button1.getSubButtons().add(button11);
+//        button1.getSubButtons().add(button12);
+//        button1.getSubButtons().add(button13);
 
 
 
-        WxMenuButton button31 = new WxMenuButton();
-        button31.setType(MenuButtonType.VIEW);
-        button31.setName("Flappy Bird");
-        button31.setUrl("https://www.rrjiaoyi.com/flappy/");
+        WxMenuButton button21 = new WxMenuButton();
+        button21.setType(MenuButtonType.VIEW);
+        button21.setName("Flappy Bird");
+        button21.setUrl("https://www.rrjiaoyi.com/flappy/");
 
-        WxMenuButton button32 = new WxMenuButton();
-        button32.setType(MenuButtonType.VIEW);
-        button32.setName("考眼力");
-        button32.setUrl("https://www.rrjiaoyi.com/games/zuiqiangyanli/");
+        WxMenuButton button22 = new WxMenuButton();
+        button22.setType(MenuButtonType.VIEW);
+        button22.setName("考眼力");
+        button22.setUrl("https://www.rrjiaoyi.com/games/zuiqiangyanli/");
 
-        WxMenuButton button33 = new WxMenuButton();
-        button33.setType(MenuButtonType.VIEW);
-        button33.setName("打飞机");
-        button33.setUrl("https://www.rrjiaoyi.com/games/plane/");
+        WxMenuButton button23 = new WxMenuButton();
+        button23.setType(MenuButtonType.VIEW);
+        button23.setName("打飞机");
+        button23.setUrl("https://www.rrjiaoyi.com/games/plane/");
 
-        WxMenuButton button34 = new WxMenuButton();
-        button34.setType(MenuButtonType.VIEW);
-        button34.setName("拆散贱人");
-        button34.setUrl("https://www.rrjiaoyi.com/games/jianren/");
+        WxMenuButton button24 = new WxMenuButton();
+        button24.setType(MenuButtonType.VIEW);
+        button24.setName("拆散贱人");
+        button24.setUrl("https://www.rrjiaoyi.com/games/jianren/");
 
-        button3.getSubButtons().add(button31);
-        button3.getSubButtons().add(button32);
-        button3.getSubButtons().add(button33);
-        button3.getSubButtons().add(button34);
+        button2.getSubButtons().add(button21);
+        button2.getSubButtons().add(button22);
+        button2.getSubButtons().add(button23);
+        button2.getSubButtons().add(button24);
 
 //
 //        WxMenuButton button31 = new WxMenuButton();
 //        button31.setType(MenuButtonType.CLICK);
 //        button31.setName("观影券");
-//        button31.setKey("CLICK_ZIYUAN");
+//        button31.setKey("CLICK_ZIYUAN");        WxMenuButton button11 = new WxMenuButton();
+//        button11.setType(MenuButtonType.CLICK);
+//        button11.setName("抽奖&领奖");
+//        button11.setKey("LUCKY_DRAW");
 //
-//        WxMenuButton button33 = new WxMenuButton();
-//        button33.setType(MenuButtonType.VIEW);
-//        button33.setName("人人交易网");
-//        button33.setUrl("http://a.app.qq.com/o/simple.jsp?pkgname=com.sm.stock.smstocktrade&channel=0002160650432d595942&fromcase=60001");
-//        button33.setKey("DOWNLOAD_APP");
+//        WxMenuButton button13 = new WxMenuButton();
+//        button13.setType(MenuButtonType.CLICK);
+//        button13.setName("获奖结果及名单");
+//        button13.setKey("THE_LIST");
+
+        WxMenuButton button31 = new WxMenuButton();
+        button31.setType(MenuButtonType.MINIPROGRAM);
+        button31.setAppId("wx698b6efdee816498");
+        button31.setName("无声小程序");
+        button31.setPagePath("pages/news/main");
+        button31.setUrl("https://www.rrjiaoyi.com/fm?v=1.05");
+
+
 
 //    WxMenuButton button34 = new WxMenuButton();
 //    button34.setType(MenuButtonType.CLICK);
 //    button34.setName("客服");
 //    button34.setKey("CLICK_KEFU");
 
-//        button3.getSubButtons().add(button31);
-//    button3.getSubButtons().add(button32);
-//        button3.getSubButtons().add(button33);
-//    button3.getSubButtons().add(button34);
+
+        WxMenuButton button32 = new WxMenuButton();
+        button32.setType(MenuButtonType.VIEW);
+        button32.setName("无声APP【安卓】");
+        button32.setUrl("https://m.wandoujia.com/apps/com.yshws.app?from=singlemessage");
+        button32.setKey("DOWNLOAD_APP");
+
+        WxMenuButton button33 = new WxMenuButton();
+        button33.setType(MenuButtonType.VIEW);
+        button33.setName("人人APP");
+        button33.setUrl("http://a.app.qq.com/o/simple.jsp?pkgname=com.sm.stock.smstocktrade&channel=0002160650432d595942&fromcase=60001");
+        button33.setKey("DOWNLOAD_APP");
+//
+//        WxMenuButton button33 = new WxMenuButton();
+//        button33.setType(MenuButtonType.VIEW);
+//        button33.setName("人人APP");
+//        button33.setUrl("http://mp.weixin.qq.com");
+////        button33.setUrl("http://a.app.qq.com/o/simple.jsp?pkgname=com.sm.stock.smstocktrade&channel=0002160650432d595942&fromcase=60001");
+//        button33.setKey("DOWNLOAD_APP");
+//
+        button3.getSubButtons().add(button31);
+        button3.getSubButtons().add(button32);
+        button3.getSubButtons().add(button33);
 
         return this.wxService.getMenuService().menuCreate(menu);
     }

@@ -71,11 +71,11 @@ public interface Hot_articleRepository extends JpaRepository<Hot_article,Integer
     @Query(value = "SELECT * FROM (SELECT * FROM hot_article u WHERE TYPE=?1 ORDER BY u.updatetime ASC) AS total limit ?2,1;",nativeQuery = true)
     List<Hot_article> advertisement(String type,int num);
 
-    @Query(value = "SELECT * FROM (SELECT * FROM hot_article u WHERE (TYPE=?1 OR TYPE=?2) AND updatetime>?3 AND (image_one is not NULL AND trim(image_one)!='') AND html IS NOT NULL ORDER BY u.updatetime ASC) AS total limit ?4,1;",nativeQuery = true)
-    List<Hot_article> findForNow(String type1,String type2, Date time, int num);
+    @Query(value = "SELECT * FROM (SELECT * FROM hot_article u WHERE (TYPE=?1 OR TYPE=?2) AND (image_one is not NULL AND trim(image_one)!='') AND html IS NOT NULL ORDER BY u.updatetime DESC) AS total limit ?3,1;",nativeQuery = true)
+    List<Hot_article> findForNow(String type1,String type2, int num);
 
-    @Query(value = "SELECT * FROM (SELECT * FROM hot_article u WHERE (TYPE=?1 OR TYPE=?2) AND updatetime>?3 AND (image_one is not NULL AND trim(image_one)!='') AND trim(originalflag)!=233 AND html IS NOT NULL ORDER BY u.updatetime ASC) AS total limit ?4,1;",nativeQuery = true)
-    List<Hot_article> findNotVideo(String type1,String type2, Date time, int num);
+    @Query(value = "SELECT * FROM (SELECT * FROM hot_article u WHERE (TYPE=?1 OR TYPE=?2) AND (image_one is not NULL AND trim(image_one)!='') AND trim(originalflag)!=233 AND html IS NOT NULL ORDER BY u.updatetime DESC) AS total limit ?3,1;",nativeQuery = true)
+    List<Hot_article> findNotVideo(String type1,String type2, int num);
 
 
     @Query(value = "SELECT * FROM hot_article u WHERE updatetime>?1 AND (image_one IS NOT NULL AND trim(image_one)!='') AND html IS NOT NULL ORDER BY u.updatetime ASC;",nativeQuery = true)

@@ -2,7 +2,7 @@ package com.github.binarywang.demo.wechat.handler;
 
 import com.github.binarywang.demo.wechat.dao.BookRepository;
 import com.github.binarywang.demo.wechat.dao.AnalysisRepository;
-import com.github.binarywang.demo.wechat.dao.Lucky_drawRespository;
+import com.github.binarywang.demo.wechat.dao.Lucky_drawRepository;
 import com.github.binarywang.demo.wechat.dao.Wshys_userRepository;
 import com.github.binarywang.demo.wechat.entity.Analysis;
 import com.github.binarywang.demo.wechat.entity.Lucky_draw;
@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static me.chanjar.weixin.common.api.WxConsts.MenuButtonType;
@@ -49,7 +50,7 @@ public class MenuHandler extends AbstractHandler {
     private AnalysisRepository inviteRepository;
 
     @Autowired
-    private Lucky_drawRespository lucky_drawRespository;
+    private Lucky_drawRepository lucky_drawRepository;
 
     @Override
     public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
@@ -60,7 +61,9 @@ public class MenuHandler extends AbstractHandler {
 //        int people = bookRepository.findTimes("MAX");
         // 获取微信用户基本信息
         WxMpUser userWxInfo = weixinService.getUserService().userInfo(wxMessage.getFromUser(), null);
-
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//这个是你要转成后的时间的格式
+        String sd = sdf.format(new Date());   // 时间戳转换成时间
+        System.out.println(sd);
 //    if(wxMessage.getEventKey().equals("NOW_ACT")){
 //      //旅游卡上限
 //      int cards = bookRepository.findBookNumber("MAX");
@@ -170,39 +173,58 @@ public class MenuHandler extends AbstractHandler {
 
     //点击抽奖事件
     if(wxMessage.getEventKey().equals("LUCKY_DRAW")){
-        Lucky_draw user = lucky_drawRespository.findByOpenid(wxMessage.getFromUser());
-        int result=0;
         int times = bookRepository.findTimes("lucky_draw");
-        int user_number=1;
-        switch (times){
-            case 1:
-                user_number=user.getRandom_num1();
-                break;
-            case 2:
-                user_number=user.getRandom_num2();
-                break;
-            case 3:
-                user_number=user.getRandom_num3();
-                break;
-            case 4:
-                user_number=user.getRandom_num4();
-                break;
+        Lucky_draw user = lucky_drawRepository.findByOpenid(wxMessage.getFromUser());
+        int result;
+        int user_number=0;
+        if(user!=null){
+            switch (times){
+                case 1:
+                    user_number=user.getRandom_num1();
+                    break;
+                case 2:
+                    user_number=user.getRandom_num2();
+                    break;
+                case 3:
+                    user_number=user.getRandom_num3();
+                    break;
+                case 4:
+                    user_number=user.getRandom_num4();
+                    break;
+            }
         }
+        System.out.println(user_number+"user_number");
         Random random = new Random();
         result = random.nextInt(90000000)+10000000;
+        System.out.println(result+"result");
         if(user==null){
             Lucky_draw lucky_draw = new Lucky_draw();
             lucky_draw.setOpenid(wxMessage.getFromUser());
-            lucky_draw.setRandom_num1(result);
-            lucky_drawRespository.save(lucky_draw);
+            lucky_draw.setTime(new Date());
+            switch (times){
+                case 1:
+                    lucky_draw.setRandom_num1(result);
+                    break;
+                case 2:
+                    lucky_draw.setRandom_num2(result);
+                    break;
+                case 3:
+                    lucky_draw.setRandom_num3(result);
+                    break;
+                case 4:
+                    lucky_draw.setRandom_num4(result);
+                    break;
+            }
+            lucky_drawRepository.save(lucky_draw);
             System.out.println(result);
         }else if(user_number==0){
+            lucky_drawRepository.upTime(new Date(),wxMessage.getFromUser());
             if(times==2){
-                lucky_drawRespository.update2(result,wxMessage.getFromUser());
+                lucky_drawRepository.update2(result,wxMessage.getFromUser());
             }else if(times==3){
-                lucky_drawRespository.update3(result,wxMessage.getFromUser());
+                lucky_drawRepository.update3(result,wxMessage.getFromUser());
             }else if(times==4){
-                lucky_drawRespository.update4(result,wxMessage.getFromUser());
+                lucky_drawRepository.update4(result,wxMessage.getFromUser());
             }
         }else {
             if(times==1){
@@ -211,27 +233,26 @@ public class MenuHandler extends AbstractHandler {
                 result = user.getRandom_num2();
             }else if(times==3){
                 result = user.getRandom_num3();
-            }else if(times==4){
+            }else{
                 result = user.getRandom_num4();
             }
         }
         WxMpKefuMessage message3 = WxMpKefuMessage
               .TEXT()
               .toUser(wxMessage.getFromUser())
-              .content(String.valueOf(result))
+              .content("【抽奖&领奖】\n" +
+                      "你的抽奖号码为："+String.valueOf(result)+"\n"+
+                        "11月11日公布抽奖结果，届时将产生两位幸运儿，免费获得iPhone XS Max一台")
               .build();
       wxService.getKefuService().sendKefuMessage(message3);
     }
-
-
         //点击事件
         if(wxMessage.getEventKey().equals("THE_PRIZE")){
-
-
             WxMpKefuMessage message = WxMpKefuMessage
                     .TEXT()
                     .toUser(wxMessage.getFromUser())
-                    .content("11月11日公布抽奖结果\n"+
+                    .content("【抽奖结果】\n" +
+                            "11月11日公布抽奖结果，届时将产生两位幸运儿，免费获得iPhone XS Max一台\n"+
                             "请耐心等待～")
                     .build();
             // 设置消息的内容等信息
@@ -239,9 +260,19 @@ public class MenuHandler extends AbstractHandler {
         }
 
         //点击事件
+        if(wxMessage.getEventKey().equals("THE_LIST")){
+            WxMpKefuMessage message = WxMpKefuMessage
+                    .TEXT()
+                    .toUser(wxMessage.getFromUser())
+                    .content("【获奖结果及名单】\n" +
+                            "敬请期待第一期获奖名单")
+                    .build();
+            // 设置消息的内容等信息
+            wxService.getKefuService().sendKefuMessage(message);
+        }
+
+        //点击事件
         if(wxMessage.getEventKey().equals("CLICK_ZIYUAN")){
-
-
             WxMpKefuMessage message = WxMpKefuMessage
                     .TEXT()
                     .toUser(wxMessage.getFromUser())
@@ -267,5 +298,4 @@ public class MenuHandler extends AbstractHandler {
 //        .fromUser(wxMessage.getToUser()).toUser(wxMessage.getFromUser())
 //        .build();
     }
-
 }

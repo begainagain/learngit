@@ -3,6 +3,7 @@ package com.github.binarywang.demo.wechat.entity;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Entity
 public class Lucky_draw{
@@ -12,8 +13,6 @@ public class Lucky_draw{
 
     private String openid;
 
-    private int times;
-
     private int random_num1;
 
     private int random_num2;
@@ -21,6 +20,8 @@ public class Lucky_draw{
     private int random_num3;
 
     private int random_num4;
+
+    private Date time;
 
     public int getId() {
         return id;
@@ -36,14 +37,6 @@ public class Lucky_draw{
 
     public void setOpenid(String openid) {
         this.openid = openid;
-    }
-
-    public int getTimes() {
-        return times;
-    }
-
-    public void setTimes(int times) {
-        this.times = times;
     }
 
     public int getRandom_num1() {
@@ -78,6 +71,14 @@ public class Lucky_draw{
         this.random_num4 = random_num4;
     }
 
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
+    }
+
     public Lucky_draw() {
     }
 
@@ -86,7 +87,6 @@ public class Lucky_draw{
         return "Lucky_draw{" +
                 "id=" + id +
                 ", openid='" + openid + '\'' +
-                ", times=" + times +
                 ", random_num1=" + random_num1 +
                 ", random_num2=" + random_num2 +
                 ", random_num3=" + random_num3 +

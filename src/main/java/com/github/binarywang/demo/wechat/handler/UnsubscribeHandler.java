@@ -42,7 +42,6 @@ public class UnsubscribeHandler extends AbstractHandler {
                                   WxSessionManager sessionManager) throws WxErrorException {
     String openId = wxMessage.getFromUser();
     Integer userid = wshys_userRepository.findIdByOpenid(openId);
-    int people = bookRepository.findNumber("MAX");
 
     wshys_userRepository.updateSubscribe("false",openId);
     this.logger.info("取消关注用户 OPENID: " + openId);

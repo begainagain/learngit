@@ -3,9 +3,16 @@ package com.github.binarywang.demo.wechat.utils;
 import com.github.binarywang.demo.wechat.dao.Hot_articleRepository;
 import com.github.binarywang.demo.wechat.entity.ProxyIP;
 import com.github.binarywang.demo.wechat.pic.ImgUtils;
+import com.google.gson.JsonArray;
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.RequestEntity;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -29,8 +36,6 @@ import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.github.binarywang.demo.wechat.utils.HtmlUtils.url_path;
 
 
 @Component
@@ -354,10 +359,12 @@ public class ImageSpider {
 
     public static String file_path(String url1){
         String path=null;
+        System.out.println(url1);
         if (url1.contains("/mmbiz_")) {
 //                            path = "D:/Program Files/新建文件夹/" + "Article-images/" + url1.substring(32, 82) + "." + url_handle(url1);
             path = url_final + "Article-images/" + url1.substring(32, 82) + "." + url_handle(url1);
-        } else if(url1.contains("/mmbiz/")){
+        }
+        else if(url1.contains("/mmbiz/")){
 //                            path = "D:/Program Files/新建文件夹/" + "Article-images/" + url1.substring(28, 78) + "." + url_handle(url1);
             path = url_final + "Article-images/" + url1.substring(28, 78) + "." + url_handle(url1);
         }else if (url1.contains("/emoji_wx/") || url1.contains("/emoji_ios/")) {
@@ -396,7 +403,8 @@ public class ImageSpider {
         } else if (!url1.contains("mmbiz")) {
 //                            path = "D:/Program Files/新建文件夹/" + "Article-images/" + url1.substring(url1.lastIndexOf("/") + 1, url1.lastIndexOf("/") + 10) + "." + url_handle(url1);
             path = url_final + "Article-images/" + url1.substring(url1.lastIndexOf("/") + 1, url1.lastIndexOf("/") + 10) + "." + url_handle(url1);
-        }else {
+        }
+        else {
             path = url_final + "Article-images/" + url1.substring(url1.lastIndexOf("/")+1);
         }
         return path;
@@ -767,12 +775,116 @@ public class ImageSpider {
         return bos.toByteArray();
     }
 
+    public static String getLevelStr(int level) {
+        StringBuffer levelStr = new StringBuffer();
+        for (int levelI = 0; levelI < level; levelI++) {
+            levelStr.append("\t");
+        }
+        return levelStr.toString();
+    }
+
 
     public static void main(String[] args) throws Exception {
 
+        String url = "http://api.rrjiaoyi.com/stock/httpServiceImpl/doStock";
+        int a = 0;
+        String result1 = null;
+        String result2 = null;
+            String JSON = "{\n" +
+                    "\t\t\t\t\"header\":\n" +
+                    "\t\t\t\t\t\t{\n" +
+                    "\t\t\t\t\t\t\t\"action\":\"S042\",\n" +
+                    "\t\t\t\t\t\t\t\"code\":\"0\",\n" +
+                    "\t\t\t\t\t\t\t\"devicetype\":\"0\",\n" +
+                    "\t\t\t\t\t\t\t\"msgtype\":0,\n" +
+                    "\t\t\t\t\t\t\t\"sendingtime\":\"2016-09-27 10:39:12.744\",\n" +
+                    "\t\t\t\t\t\t\t\"version\":\"1.0.1\",\n" +
+                    "\t\t\t\t\t\t\t\"page\":{\"index\":\"1\",\"size\":\"10\"}\n" +
+                    "\t\t\t\t\t\t},\n" +
+                    "\t                    \"profitType\":\"\",\n" +
+                    "\t                     \"style_id\":\"4\"\n" +
+                    "\t\t\t\t}\n";
+            //创建连接对象
+            HttpClient httpClient = new HttpClient();
+            //创建请求
+            PostMethod method = new PostMethod(url);
+            //设置请求头格式为json格式
+            RequestEntity entity = new StringRequestEntity(JSON, "application/json", "UTF-8");
+            //设置请求体信息
+            method.setRequestEntity(entity);
+            //设置请求头信息
+            method.setRequestHeader("APPKEY", "C6C6E17AC153ED8DF8D61207");
+            //创建连接
+            try {
+                httpClient.executeMethod(method);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //获取返回信息
+            InputStream in = null;
+            try {
+                in = method.getResponseBodyAsStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            InputStreamReader isr = new InputStreamReader(in, "UTF-8");
+            char[] b = new char[4096];
+            StringBuilder sb = new StringBuilder();
+            for (int n; (n = isr.read(b)) != -1; ) {
+                sb.append(new String(b, 0, n));
+            }
+            JSONObject json = JSONObject.fromObject(sb);
+            String returnStr = sb.toString();
 
 
+            int level = 0;
+            //存放格式化的json字符串
+            StringBuffer jsonForMatStr = new StringBuffer();
+            for (int index = 0; index < returnStr.length(); index++)//将字符串中的字符逐个按行输出
+            {
+                //获取s中的每个字符
+                char c = returnStr.charAt(index);
+                //level大于0并且jsonForMatStr中的最后一个字符为\n,jsonForMatStr加入\t
+                if (level > 0 && '\n' == jsonForMatStr.charAt(jsonForMatStr.length() - 1)) {
+                    jsonForMatStr.append(getLevelStr(level));
+                }
+                switch (c) {
+                    case '{':
+                    case '[':
+                        jsonForMatStr.append(c + "\n");
+                        level++;
+                        break;
+                    case ',':
+                        jsonForMatStr.append(c + "\n");
+                        break;
+                    case '}':
+                    case ']':
+                        jsonForMatStr.append("\n");
+                        level--;
+                        jsonForMatStr.append(getLevelStr(level));
+                        jsonForMatStr.append(c);
+                        break;
+                    default:
+                        jsonForMatStr.append(c);
+                        break;
+                }
+            }
+//            System.out.println(jsonForMatStr);
+            String jn = String.valueOf(jsonForMatStr);
 
+//            switch (i) {
+//                case 0:
+                    result1 = jn.substring(jn.indexOf("[") + 1, jn.indexOf("]"));
+//                case 1:
+//                    result2 = jn.replace("]", "," + result1 + "]");
+//            }
+//            System.out.println(result1 + "r111111111111111111");
+
+//            System.out.println(result2);
+            a += 3;
+
+        JSONObject array = JSONObject.fromObject(jn);
+        System.out.println(array);
 
 //        String url="https://mp.weixin.qq.com/mp/videoplayer?action=get_mp_video_play_url&__biz=MzI4MDU3Njk4MA==&mid=&idx=&vid=wxv_481601144360353794&uin=&key=&pass_ticket=&wxtoken=777&appmsg_token=&x5=0&f=json";
 //        String html = getHTML(url);
@@ -792,13 +904,6 @@ public class ImageSpider {
 //        System.out.println(src1);
 //
 //        downLoadFromUrl(src1, title1 + ".mp4", "D:/Program Files/新建文件夹");
-
-        Random random = new Random();
-
-        for(int i =0;i<10;i++){
-            int result = random.nextInt(900000)+100000;
-            System.out.println(result);
-        }
 
 //        File newfile=new File("D:/Program Files/新建文件夹/Article-images/h0DBVXc9sJRhKKgXOdyKflheMYt7UYCBdZia14CxcV9KiagDHe.jpeg");
 //        BufferedImage bufferedimage=ImageIO.read(newfile);

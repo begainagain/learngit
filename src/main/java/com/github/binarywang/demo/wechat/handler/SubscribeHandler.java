@@ -58,7 +58,6 @@ public class SubscribeHandler extends AbstractHandler {
       // 获取微信用户基本信息
       WxMpUser userWxInfo = weixinService.getUserService().userInfo(wxMessage.getFromUser(), null);
       WxMpXmlOutMessage responseResult = null;
-      int people = bookRepository.findNumber("MAX");
       try {
           responseResult = handleSpecial(wxMessage,weixinService);
       } catch (Exception e) {
@@ -130,6 +129,15 @@ public class SubscribeHandler extends AbstractHandler {
               .content("你好，欢迎关注无声或有声!")
               .build();
       weixinService.getKefuService().sendKefuMessage(message1);
+
+//      //关注回复1
+//      WxMpKefuMessage message2 = WxMpKefuMessage
+//              .TEXT()
+//              .toUser(userWxInfo.getOpenId())
+//              .content("点击公众号下方菜单栏中“抽大奖”\n"
+//                      +"参与免费抽取iPhone XS Max活动")
+//              .build();
+//      weixinService.getKefuService().sendKefuMessage(message2);
 //
 //      //关注回复2
 //      WxMpKefuMessage message2 = WxMpKefuMessage

@@ -14,9 +14,9 @@ import static com.github.binarywang.demo.wechat.utils.ImageSpider.getHTML;
 
 public class HtmlUtils {
 
-//    public static final String url_path = "https://www.rrjiaoyi.com/";
+    public static final String url_path = "https://www.rrjiaoyi.com/";
 //    public static final String url_path = "D:/Program Files/新建文件夹/";
-    public static final String url_path = "https://rrtest.rrjiaoyi.com/";
+//    public static final String url_path = "https://rrtest.rrjiaoyi.com/";
 //    private static final String WECHAT="<span class=\"rich_media_meta rich_media_meta_nickname\" id=\"profileBt\">([\\s\\S]*?)</em>";
 
     public static final String video_path = "/mnt/video";
@@ -280,35 +280,35 @@ public class HtmlUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        String url = "https://mp.weixin.qq.com/s?__biz=MzIxMDIzODM1NA==&mid=2649457296&idx=1&sn=9acfefaefb9ea25e631d44fb2c2ac8db&scene=0#wechat_redirect";
+        String url = "https://mp.weixin.qq.com/s?__biz=MjM5MzI4MTc2NA==&mid=2652235756&idx=1&sn=1db9b47242f22dac3242329e578939c9&scene=0#wechat_redirect";
         ImageSpider imageSpider = new ImageSpider();
         imageSpider.startCrawler(url);
         imageSpider.close();
 
 
-        String html = getHTML(url);
-        List<String> listUrl = ImageSpider.getImageURL(html);
-        List<String> listSrc = ImageSpider.getImageSrc(listUrl);
-        List<Integer> listRight = ImageSpider.getRightImage(html,listSrc);
-
-        List<String> list = new ArrayList<>();
-        System.out.println(listUrl+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
-        if (listRight != null) {
-            for(int i=0;i<listRight.size();i++){
-                int m = listRight.get(i);
-                list.add(listSrc.get(m));
-                System.out.println(list);
-            }
-        }
-
-        String newStr = replaceHtmlTag(html, "img", "data-src", listSrc, "\"");
-
-
-
-//        saveHtml("C:/Users/admin/Desktop/photo/html.html",newStr);
-        String neS = replaceHtmlVideo(newStr);
-        saveHtml("C:/Users/admin/Desktop/photo/html.html",neS);
+//        String html = getHTML(url);
+//        List<String> listUrl = ImageSpider.getImageURL(html);
+//        List<String> listSrc = ImageSpider.getImageSrc(listUrl);
+//        List<Integer> listRight = ImageSpider.getRightImage(html,listSrc);
+//
+//        List<String> list = new ArrayList<>();
+//        System.out.println(listUrl+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//
+//        if (listRight != null) {
+//            for(int i=0;i<listRight.size();i++){
+//                int m = listRight.get(i);
+//                list.add(listSrc.get(m));
+//                System.out.println(list);
+//            }
+//        }
+//
+//        String newStr = replaceHtmlTag(html, "img", "data-src", listSrc, "\"");
+//
+//
+//
+////        saveHtml("C:/Users/admin/Desktop/photo/html.html",newStr);
+//        String neS = replaceHtmlVideo(newStr);
+//        saveHtml("C:/Users/admin/Desktop/photo/html.html",neS);
 
 //        for (int i = 0; i < list.size(); i++) {
 //            String src=list.get(i);
